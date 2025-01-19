@@ -18,11 +18,40 @@ impl Ticket {
     // as well as some `String` methods. Use the documentation of Rust's standard library
     // to find the most appropriate options -> https://doc.rust-lang.org/std/string/struct.String.html
     fn new(title: String, description: String, status: String) -> Self {
-        todo!();
+        if !Self::is_title_valid(&title)
+            || !Self::is_status_valid(&status)
+            || !Self::is_description_valid(&description)
+        {
+            panic!("not valid")
+        }
         Self {
             title,
             description,
             status,
+        }
+    }
+
+    fn is_title_valid(title: &String) -> bool {
+        if title.is_empty() || title.len() > 50 {
+            false
+        } else {
+            true
+        }
+    }
+
+    fn is_status_valid(status: &String) -> bool {
+        if status != "To-Do" && status != "In Progress" && status != "Done" {
+            false
+        } else {
+            true
+        }
+    }
+
+    fn is_description_valid(description: &String) -> bool {
+        if description.is_empty() || description.len() > 50 {
+            false
+        } else {
+            true
         }
     }
 }
