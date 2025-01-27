@@ -11,3 +11,74 @@
 // Integration here has a very specific meaning: they test **the public API** of your project.
 // You'll need to pay attention to the visibility of your types and methods; integration
 // tests can't access private or `pub(crate)` items.
+pub struct Order {
+    product_name: String,
+    quantity: u32,
+    unit_price: u32,
+}
+
+impl Order {
+    pub fn new(product_name: String, quantity: u32, unit_price: u32) -> Order {
+        let mut o = Order {
+            product_name: String::from(""),
+            quantity: 0,
+            unit_price: 0,
+        };
+        match o.set_product_name(product_name) {
+            Ok(_) => (),
+            Err(msg) => panic!("{}", msg.to_string()),
+        }
+        match o.set_quantity(quantity) {
+            Ok(_) => (),
+            Err(msg) => panic!("{}", msg.to_string()),
+        }
+        match o.set_unit_price(unit_price) {
+            Ok(_) => (),
+            Err(msg) => panic!("{}", msg.to_string()),
+        }
+        o
+    }
+
+    pub fn set_product_name(&mut self, product_name: String) -> Result<(), String> {
+        if product_name.is_empty() {
+            return Err(String::from("Product cannot be empty."));
+        }
+        if product_name.len() > 300 {
+            return Err(String::from("Product cannot be more than 300 symbols."));
+        }
+        self.product_name = product_name;
+        Ok(())
+    }
+
+    pub fn set_quantity(&mut self, quantity: u32) -> Result<(), String> {
+        if quantity == 0 {
+            return Err(String::from("Quantity cannot be zero."));
+        }
+        self.quantity = quantity;
+        Ok(())
+    }
+
+    pub fn set_unit_price(&mut self, unit_price: u32) -> Result<(), String> {
+        if unit_price == 0 {
+            return Err(String::from("Price cannot be zero."));
+        }
+        self.unit_price = unit_price;
+        Ok(())
+    }
+
+    pub fn product_name(&self) -> &String {
+        &self.product_name
+    }
+
+    pub fn quantity(&self) -> &u32 {
+        &self.quantity
+    }
+
+    pub fn unit_price(&self) -> &u32 {
+        &self.unit_price
+    }
+
+    pub fn total(&self) -> u32 {
+        self.quantity * self.unit_price
+    }
+}

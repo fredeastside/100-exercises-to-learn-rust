@@ -1,3 +1,5 @@
+use core::panic;
+
 struct Ticket {
     title: String,
     description: String,
@@ -18,11 +20,17 @@ impl Ticket {
     // as well as some `String` methods. Use the documentation of Rust's standard library
     // to find the most appropriate options -> https://doc.rust-lang.org/std/string/struct.String.html
     fn new(title: String, description: String, status: String) -> Self {
-        if !Self::is_title_valid(&title)
-            || !Self::is_status_valid(&status)
-            || !Self::is_description_valid(&description)
-        {
-            panic!("not valid")
+        match Self::validate_title(&title) {
+            Ok(_) => (),
+            Err(msg) => panic!("{}", msg.to_string()),
+        }
+        match Self::validate_status(&status) {
+            Ok(_) => (),
+            Err(msg) => panic!("{}", msg.to_string()),
+        }
+        match Self::validate_description(&description) {
+            Ok(_) => (),
+            Err(msg) => panic!("{}", msg.to_string()),
         }
         Self {
             title,
@@ -31,28 +39,33 @@ impl Ticket {
         }
     }
 
-    fn is_title_valid(title: &String) -> bool {
-        if title.is_empty() || title.len() > 50 {
-            false
-        } else {
-            true
+    fn validate_title(title: &String) -> Result<(), String> {
+        if title.is_empty() {
+            return Err(String::from("Title cannot be empty"));
         }
+        if title.len() > 50 {
+            return Err(String::from("Title cannot be longer than 50 bytes"));
+        }
+        Ok(())
     }
 
-    fn is_status_valid(status: &String) -> bool {
+    fn validate_status(status: &String) -> Result<(), String> {
         if status != "To-Do" && status != "In Progress" && status != "Done" {
-            false
-        } else {
-            true
+            return Err(String::from(
+                "Only `To-Do`, `In Progress`, and `Done` statuses are allowed",
+            ));
         }
+        Ok(())
     }
 
-    fn is_description_valid(description: &String) -> bool {
-        if description.is_empty() || description.len() > 50 {
-            false
-        } else {
-            true
+    fn validate_description(description: &String) -> Result<(), String> {
+        if description.is_empty() {
+            return Err(String::from("Description cannot be empty"));
         }
+        if description.len() > 500 {
+            return Err(String::from("Description cannot be longer than 500 bytes"));
+        }
+        Ok(())
     }
 }
 
